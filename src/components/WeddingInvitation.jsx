@@ -655,7 +655,7 @@ export default function WeddingInvitation() {
 
           <div className="image-frame max-w-2xl mx-auto overflow-hidden">
             <img
-              src="/wedding-photo.jpg"
+              src="/public/photo1.jpg"
               alt="Suhejb & Aurora"
               className="w-full h-auto object-cover"
               style={{ aspectRatio: '3/4', maxHeight: '70vh' }}
