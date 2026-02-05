@@ -219,7 +219,7 @@ export default function WeddingInvitation() {
   }
 
   return (
-    <div className="snap-container">
+    <div className="snap-container" style={{ scrollPaddingTop: '0px' }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cinzel:wght@400;600&family=Cormorant+Garamond:wght@400;600;700&display=swap');
 
@@ -232,14 +232,22 @@ export default function WeddingInvitation() {
         .font-caps{ font-family:"Cinzel", serif; letter-spacing:.18em; }
         .font-script{ font-family:"Great Vibes", cursive; }
         .font-serif{ font-family:"Cormorant Garamond", serif; }
+        
+        * {
+          -webkit-overflow-scrolling: touch;
+        }
 
         /* SMOOTH SCROLL SNAPPING */
         .snap-container {
           height: 100vh;
           overflow-y: scroll;
+          overflow-x: hidden;
           scroll-snap-type: y mandatory;
           scroll-behavior: smooth;
           background: #f6f1e9;
+          width: 100%;
+          max-width: 100vw;
+          scroll-padding: 0;
         }
 
         .snap-section {
@@ -247,6 +255,17 @@ export default function WeddingInvitation() {
           scroll-snap-align: start;
           scroll-snap-stop: always;
           position: relative;
+          width: 100%;
+          max-width: 100vw;
+          overflow-x: hidden;
+        }
+        
+        /* Prevent horizontal overflow */
+        body, html {
+          overflow-x: hidden;
+          max-width: 100vw;
+          margin: 0;
+          padding: 0;
         }
 
         .divider{
@@ -256,8 +275,10 @@ export default function WeddingInvitation() {
 
         .scroll-section{
           opacity:0;
-          transform:translateY(40px);
-          transition:opacity .9s ease, transform .9s ease;
+          transform:translateY(60px);
+          transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1), 
+                      transform 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+          will-change: opacity, transform;
         }
         .scroll-section.visible{
           opacity:1;
@@ -411,6 +432,7 @@ export default function WeddingInvitation() {
         /* DECORATIVE FLOURISH */
         .flourish {
           position: relative;
+          padding: 0 50px;
         }
 
         .flourish::before,
@@ -424,13 +446,24 @@ export default function WeddingInvitation() {
         }
 
         .flourish::before {
-          left: -40px;
+          left: 10px;
           animation-delay: 0s;
         }
 
         .flourish::after {
-          right: -40px;
+          right: 10px;
           animation-delay: 1s;
+        }
+        
+        /* Hide flourishes on small screens */
+        @media (max-width: 640px) {
+          .flourish {
+            padding: 0;
+          }
+          .flourish::before,
+          .flourish::after {
+            display: none;
+          }
         }
 
         @keyframes flourishPulse {
@@ -535,11 +568,11 @@ export default function WeddingInvitation() {
             SAVE THE DATE
           </div>
 
-          <h1 className="font-script text-[76px] mt-6 text-[color:var(--ink)] dancing-text romantic-glow">
+          <h1 className="font-script text-[76px] sm:text-[76px] text-[56px] mt-6 text-[color:var(--ink)] dancing-text romantic-glow">
             Dita e Dasmës
           </h1>
 
-          <div className="font-serif text-[46px] mt-4 text-[color:var(--ink)] font-semibold flourish">
+          <div className="font-serif text-[32px] sm:text-[46px] mt-4 text-[color:var(--ink)] font-semibold flourish">
             <span className="name-animate">Suhejb</span>{" "}
             <span style={{ color: "var(--gold)" }} className="dancing-text">&</span>{" "}
             <span className="name-animate">Aurora</span>
@@ -575,7 +608,7 @@ export default function WeddingInvitation() {
             NUMËRIMI MBRAPSHT
           </div>
 
-          <h2 className="font-serif text-[52px] mt-4 text-[color:var(--ink)] font-semibold romantic-glow">
+          <h2 className="font-serif text-[36px] sm:text-[52px] mt-4 text-[color:var(--ink)] font-semibold romantic-glow">
             Po i afrohemi ditës sonë
           </h2>
 
@@ -622,14 +655,14 @@ export default function WeddingInvitation() {
 
           <div className="image-frame max-w-2xl mx-auto overflow-hidden">
             <img
-              src="/public/photo1.jpg"
+              src="/wedding-photo.jpg"
               alt="Suhejb & Aurora"
               className="w-full h-auto object-cover"
               style={{ aspectRatio: '3/4', maxHeight: '70vh' }}
             />
           </div>
 
-          <div className="font-script text-[38px] mt-10 text-[color:var(--gold)] dancing-text">
+          <div className="font-script text-[32px] sm:text-[38px] mt-10 text-[color:var(--gold)] dancing-text">
             Suhejb & Aurora
           </div>
           
@@ -649,7 +682,7 @@ export default function WeddingInvitation() {
         <div className="text-center max-w-3xl w-full relative z-10">
           <div className="quote-mark mb-4">"</div>
           
-          <p className="font-serif text-[32px] leading-relaxed text-[color:var(--ink)] italic">
+          <p className="font-serif text-[24px] sm:text-[32px] leading-relaxed text-[color:var(--ink)] italic px-4">
             Dashuria është mrekullia jonë,
             <br />
             besnikëria është forca jonë,
@@ -679,7 +712,7 @@ export default function WeddingInvitation() {
             VENDNDODHJA
           </div>
 
-          <h2 className="font-serif text-[52px] mt-4 text-[color:var(--ink)] font-semibold romantic-glow">
+          <h2 className="font-serif text-[36px] sm:text-[52px] mt-4 text-[color:var(--ink)] font-semibold romantic-glow">
             Restaurant Rozafa
           </h2>
 
@@ -719,12 +752,12 @@ export default function WeddingInvitation() {
             HAP NË GOOGLE MAPS
           </button>
 
-          <div className="mt-12 flex justify-center items-center gap-2 text-[color:var(--muted)]">
-            <Heart size={18} color="#b89a5a" className="dancing-text" fill="#b89a5a" />
-            <span className="font-serif text-[20px]">
+          <div className="mt-12 flex flex-wrap justify-center items-center gap-2 text-[color:var(--muted)] px-4">
+            <Heart size={18} color="#b89a5a" className="dancing-text flex-shrink-0" fill="#b89a5a" />
+            <span className="font-serif text-[16px] sm:text-[20px] text-center">
               Me padurim presim të festojmë së bashku me ju
             </span>
-            <Heart size={18} color="#b89a5a" className="dancing-text" fill="#b89a5a" />
+            <Heart size={18} color="#b89a5a" className="dancing-text flex-shrink-0" fill="#b89a5a" />
           </div>
         </div>
       </section>
