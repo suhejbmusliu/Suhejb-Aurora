@@ -36,7 +36,7 @@ export default function WeddingInvitation() {
       setCountdown({
         days: Math.floor(distance / (1000 * 60 * 60 * 24)),
         hours: Math.floor(
-          (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+          (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
         ),
         minutes: Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)),
         seconds: Math.floor((distance % (1000 * 60)) / 1000),
@@ -70,7 +70,7 @@ export default function WeddingInvitation() {
           if (entry.isIntersecting) entry.target.classList.add("visible");
         });
       },
-      { threshold: 0.18, rootMargin: "0px 0px -90px 0px" }
+      { threshold: 0.18, rootMargin: "0px 0px -90px 0px" },
     );
 
     sectionsRef.current.forEach((el) => el && observer.observe(el));
@@ -80,7 +80,7 @@ export default function WeddingInvitation() {
   const openMap = () => {
     window.open(
       "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2943.735336091545!2d21.756726276208845!3d42.45464702912047!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1354e4a024c270cd%3A0xc1b8fa0bac747aca!2sHotel%20Restaurant%20Rozafa!5e0!3m2!1sen!2smk!4v1768006090070!5m2!1sen!2smk",
-      "_blank"
+      "_blank",
     );
   };
 
@@ -209,7 +209,7 @@ export default function WeddingInvitation() {
                 Ftesa jonë e dasmës
               </div>
               <div className="font-caps text-white/80 text-[11px] mt-2">
-                Suhejb & Aurora
+                Erblin & Arjeta
               </div>
             </div>
           </div>
@@ -219,7 +219,7 @@ export default function WeddingInvitation() {
   }
 
   return (
-    <div className="snap-container" style={{ scrollPaddingTop: '0px' }}>
+    <div className="snap-container" style={{ scrollPaddingTop: "0px" }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cinzel:wght@400;600&family=Cormorant+Garamond:wght@400;600;700&display=swap');
 
@@ -546,7 +546,7 @@ export default function WeddingInvitation() {
       `}</style>
 
       {/* SCROLL DOWN HINT */}
-      <div className={`scroll-hint ${showScrollHint ? '' : 'hidden'}`}>
+      <div className={`scroll-hint ${showScrollHint ? "" : "hidden"}`}>
         <div className="flex flex-col items-center gap-2">
           <div className="font-caps text-[10px] text-[color:var(--gold)]">
             RRËSHQIT POSHTË
@@ -562,7 +562,7 @@ export default function WeddingInvitation() {
       >
         <FloatingHearts />
         <Sparkles />
-        
+
         <div className="text-center max-w-3xl fade-in-stagger relative z-10">
           <div className="font-caps text-[12px] text-[color:var(--muted)]">
             SAVE THE DATE
@@ -573,9 +573,11 @@ export default function WeddingInvitation() {
           </h1>
 
           <div className="font-serif text-[32px] sm:text-[46px] mt-4 text-[color:var(--ink)] font-semibold flourish">
-            <span className="name-animate">Suhejb</span>{" "}
-            <span style={{ color: "var(--gold)" }} className="dancing-text">&</span>{" "}
-            <span className="name-animate">Aurora</span>
+            <span className="name-animate">Erblin</span>{" "}
+            <span style={{ color: "var(--gold)" }} className="dancing-text">
+              &
+            </span>{" "}
+            <span className="name-animate">Arjeta</span>
           </div>
 
           <div className="mt-10 divider"></div>
@@ -600,9 +602,13 @@ export default function WeddingInvitation() {
         className="snap-section flex items-center justify-center px-6 scroll-section bg2"
       >
         <FloatingHearts />
-        
+
         <div className="text-center max-w-4xl w-full relative z-10">
-          <Calendar className="mx-auto mb-6 dancing-text" size={56} color="#b89a5a" />
+          <Calendar
+            className="mx-auto mb-6 dancing-text"
+            size={56}
+            color="#b89a5a"
+          />
 
           <div className="font-caps text-[12px] text-[color:var(--muted)]">
             NUMËRIMI MBRAPSHT
@@ -647,7 +653,7 @@ export default function WeddingInvitation() {
         className="snap-section flex items-center justify-center px-6 scroll-section bg3"
       >
         <Sparkles />
-        
+
         <div className="text-center max-w-4xl w-full relative z-10">
           <div className="font-caps text-[12px] text-[color:var(--muted)] mb-8">
             ÇIFTI I LUMTUR
@@ -658,14 +664,14 @@ export default function WeddingInvitation() {
               src="/photo1.jpg"
               alt="Suhejb & Aurora"
               className="w-full h-auto object-cover"
-              style={{ aspectRatio: '3/4', maxHeight: '70vh' }}
+              style={{ aspectRatio: "3/4", maxHeight: "70vh" }}
             />
           </div>
 
           <div className="font-script text-[32px] sm:text-[38px] mt-10 text-[color:var(--gold)] dancing-text">
-            Suhejb & Aurora
+            Erblin & Arjeta
           </div>
-          
+
           <p className="font-serif text-[18px] mt-4 text-[color:var(--muted)] italic">
             Bashkë përgjithmonë
           </p>
@@ -678,10 +684,10 @@ export default function WeddingInvitation() {
         className="snap-section flex items-center justify-center px-6 scroll-section bg4"
       >
         <FloatingHearts />
-        
+
         <div className="text-center max-w-3xl w-full relative z-10">
           <div className="quote-mark mb-4">"</div>
-          
+
           <p className="font-serif text-[24px] sm:text-[32px] leading-relaxed text-[color:var(--ink)] italic px-4">
             Dashuria është mrekullia jonë,
             <br />
@@ -706,7 +712,7 @@ export default function WeddingInvitation() {
         className="snap-section flex items-center justify-center px-6 scroll-section bg5"
       >
         <FloatingHearts />
-        
+
         <div className="text-center max-w-5xl w-full relative z-10">
           <div className="font-caps text-[12px] text-[color:var(--muted)]">
             VENDNDODHJA
@@ -727,7 +733,7 @@ export default function WeddingInvitation() {
             style={{ border: "1px solid rgba(184,154,90,.25)" }}
           >
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2943.735336091545!2d21.756726276208845!3d42.45464702912047!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1354e4a024c270cd%3A0xc1b8fa0bac747aca!2sHotel%20Restaurant%20Rozafa!5e0!3m2!1sen!2smk!4v1768006090070!5m2!1sen!2smk" 
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2943.735336091545!2d21.756726276208845!3d42.45464702912047!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1354e4a024c270cd%3A0xc1b8fa0bac747aca!2sHotel%20Restaurant%20Rozafa!5e0!3m2!1sen!2smk!4v1768006090070!5m2!1sen!2smk"
               width="100%"
               height="360"
               style={{ border: 0 }}
@@ -753,11 +759,21 @@ export default function WeddingInvitation() {
           </button>
 
           <div className="mt-12 flex flex-wrap justify-center items-center gap-2 text-[color:var(--muted)] px-4">
-            <Heart size={18} color="#b89a5a" className="dancing-text flex-shrink-0" fill="#b89a5a" />
+            <Heart
+              size={18}
+              color="#b89a5a"
+              className="dancing-text flex-shrink-0"
+              fill="#b89a5a"
+            />
             <span className="font-serif text-[16px] sm:text-[20px] text-center">
               Me padurim presim të festojmë së bashku me ju
             </span>
-            <Heart size={18} color="#b89a5a" className="dancing-text flex-shrink-0" fill="#b89a5a" />
+            <Heart
+              size={18}
+              color="#b89a5a"
+              className="dancing-text flex-shrink-0"
+              fill="#b89a5a"
+            />
           </div>
         </div>
       </section>
