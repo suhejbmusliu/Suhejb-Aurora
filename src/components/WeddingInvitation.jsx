@@ -1,13 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
-import { MapPin, Calendar, Heart } from "lucide-react";
+import { MapPin, Calendar, Heart, ChevronDown } from "lucide-react";
 
 export default function WeddingInvitation() {
-  // stages: "intro" -> "details"
   const [stage, setStage] = useState("intro");
   const [started, setStarted] = useState(false);
-
-  // ✅ smooth transition overlay (fade to black before showing details)
   const [fadeToDetails, setFadeToDetails] = useState(false);
+  const [showScrollHint, setShowScrollHint] = useState(true);
 
   const introRef = useRef(null);
   const sectionsRef = useRef([]);
@@ -19,8 +17,7 @@ export default function WeddingInvitation() {
     seconds: 0,
   });
 
-  // 📅 Wedding date: 25 April 2026 – 17:00
-  const weddingDate = new Date(2026, 3, 25, 17, 0, 0); // April = 3
+  const weddingDate = new Date(2026, 3, 25, 17, 0, 0);
 
   // Countdown logic
   useEffect(() => {
@@ -49,6 +46,20 @@ export default function WeddingInvitation() {
     return () => clearInterval(timer);
   }, [stage, weddingDate]);
 
+  // Hide scroll hint after first scroll
+  useEffect(() => {
+    if (stage !== "details") return;
+
+    const handleScroll = () => {
+      if (window.scrollY > 100) {
+        setShowScrollHint(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [stage]);
+
   // Scroll reveal
   useEffect(() => {
     if (stage !== "details") return;
@@ -68,12 +79,11 @@ export default function WeddingInvitation() {
 
   const openMap = () => {
     window.open(
-      "https://maps.google.com/?q=Masia+Can+Cortada+Barcelona",
+      "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2943.735336091545!2d21.756726276208845!3d42.45464702912047!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1354e4a024c270cd%3A0xc1b8fa0bac747aca!2sHotel%20Restaurant%20Rozafa!5e0!3m2!1sen!2smk!4v1768006090070!5m2!1sen!2smk",
       "_blank"
     );
   };
 
-  // ▶️ Play intro video on tap
   const handleIntroClick = async () => {
     const v = introRef.current;
     if (!v) return;
@@ -81,7 +91,6 @@ export default function WeddingInvitation() {
     setStarted(true);
 
     try {
-      // if user clicks again, restart
       if (v.currentTime > 0 && v.paused) v.currentTime = 0;
       await v.play();
     } catch (e) {
@@ -89,15 +98,49 @@ export default function WeddingInvitation() {
     }
   };
 
-  // ✅ smooth entry: fade to black, then show details
   const handleIntroEnded = () => {
     setFadeToDetails(true);
     setTimeout(() => setStage("details"), 450);
   };
 
-  // =========================
-  // 🎥 INTRO – FULLSCREEN VIDEO
-  // =========================
+  // Floating hearts component
+  const FloatingHearts = () => (
+    <div className="floating-hearts">
+      {[...Array(6)].map((_, i) => (
+        <Heart
+          key={i}
+          className="floating-heart"
+          style={{
+            left: `${15 + i * 15}%`,
+            animationDelay: `${i * 0.8}s`,
+            animationDuration: `${4 + i * 0.5}s`,
+          }}
+          size={20}
+          fill="#b89a5a"
+          color="#b89a5a"
+          opacity={0.3}
+        />
+      ))}
+    </div>
+  );
+
+  // Sparkles component
+  const Sparkles = () => (
+    <div className="sparkles-container">
+      {[...Array(8)].map((_, i) => (
+        <div
+          key={i}
+          className="sparkle"
+          style={{
+            left: `${10 + i * 12}%`,
+            top: `${20 + (i % 3) * 25}%`,
+            animationDelay: `${i * 0.4}s`,
+          }}
+        />
+      ))}
+    </div>
+  );
+
   if (stage === "intro") {
     return (
       <div className="fixed inset-0 bg-black">
@@ -132,7 +175,6 @@ export default function WeddingInvitation() {
           className="absolute inset-0 cursor-pointer"
           onClick={handleIntroClick}
         >
-          {/* Fullscreen video */}
           <video
             ref={introRef}
             src="/intro.mp4"
@@ -143,10 +185,8 @@ export default function WeddingInvitation() {
             onEnded={handleIntroEnded}
           />
 
-          {/* Dark overlay */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-black/40" />
 
-          {/* ✅ Fade to black before showing details */}
           <div
             className="absolute inset-0 pointer-events-none"
             style={{
@@ -156,7 +196,6 @@ export default function WeddingInvitation() {
             }}
           />
 
-          {/* TAP TEXT */}
           <div
             className={`absolute inset-x-0 bottom-16 flex justify-center px-6 ${
               started ? "fadeOut" : ""
@@ -179,11 +218,8 @@ export default function WeddingInvitation() {
     );
   }
 
-  // =========================
-  // 💍 DETAILS – FULLSCREEN SECTIONS
-  // =========================
   return (
-    <div className="min-h-screen bg-[#f6f1e9] overflow-x-hidden">
+    <div className="snap-container">
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cinzel:wght@400;600&family=Cormorant+Garamond:wght@400;600;700&display=swap');
 
@@ -196,6 +232,22 @@ export default function WeddingInvitation() {
         .font-caps{ font-family:"Cinzel", serif; letter-spacing:.18em; }
         .font-script{ font-family:"Great Vibes", cursive; }
         .font-serif{ font-family:"Cormorant Garamond", serif; }
+
+        /* SMOOTH SCROLL SNAPPING */
+        .snap-container {
+          height: 100vh;
+          overflow-y: scroll;
+          scroll-snap-type: y mandatory;
+          scroll-behavior: smooth;
+          background: #f6f1e9;
+        }
+
+        .snap-section {
+          min-height: 100vh;
+          scroll-snap-align: start;
+          scroll-snap-stop: always;
+          position: relative;
+        }
 
         .divider{
           height:1px;
@@ -215,30 +267,282 @@ export default function WeddingInvitation() {
         .bg1{ background:linear-gradient(180deg,#f6f1e9,#f2e8dc); }
         .bg2{ background:linear-gradient(180deg,#f6f1e9,#f1e6d7); }
         .bg3{ background:linear-gradient(180deg,#f6f1e9,#efe3d2); }
+        .bg4{ background:linear-gradient(180deg,#f2e8dc,#efe3d2); }
+        .bg5{ background:linear-gradient(180deg,#efe3d2,#f6f1e9); }
 
         .countBox{
           background:rgba(255,255,255,.6);
           border:1px solid rgba(184,154,90,.25);
           border-radius:18px;
+          transition: transform 0.3s ease;
+        }
+
+        .countBox:hover {
+          transform: translateY(-5px);
+        }
+
+        /* SCROLL DOWN HINT */
+        .scroll-hint {
+          position: fixed;
+          bottom: 30px;
+          left: 50%;
+          transform: translateX(-50%);
+          z-index: 50;
+          animation: bounceUpDown 2s ease-in-out infinite;
+          transition: opacity 0.5s ease;
+        }
+
+        .scroll-hint.hidden {
+          opacity: 0;
+          pointer-events: none;
+        }
+
+        @keyframes bounceUpDown {
+          0%, 100% {
+            transform: translateX(-50%) translateY(0);
+          }
+          50% {
+            transform: translateX(-50%) translateY(-15px);
+          }
+        }
+
+        /* FLOATING HEARTS ANIMATION */
+        .floating-hearts {
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          pointer-events: none;
+          overflow: hidden;
+        }
+
+        .floating-heart {
+          position: absolute;
+          bottom: -50px;
+          animation: floatUp 6s ease-in infinite;
+        }
+
+        @keyframes floatUp {
+          0% {
+            transform: translateY(0) rotate(0deg);
+            opacity: 0;
+          }
+          10% {
+            opacity: 0.6;
+          }
+          90% {
+            opacity: 0.6;
+          }
+          100% {
+            transform: translateY(-120vh) rotate(360deg);
+            opacity: 0;
+          }
+        }
+
+        /* SPARKLES ANIMATION */
+        .sparkles-container {
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          pointer-events: none;
+        }
+
+        .sparkle {
+          position: absolute;
+          width: 8px;
+          height: 8px;
+          background: var(--gold);
+          border-radius: 50%;
+          animation: sparkle 3s ease-in-out infinite;
+          box-shadow: 0 0 10px var(--gold);
+        }
+
+        @keyframes sparkle {
+          0%, 100% {
+            opacity: 0;
+            transform: scale(0);
+          }
+          50% {
+            opacity: 1;
+            transform: scale(1);
+          }
+        }
+
+        /* DANCING TEXT ANIMATION */
+        .dancing-text {
+          display: inline-block;
+          animation: dance 2s ease-in-out infinite;
+        }
+
+        @keyframes dance {
+          0%, 100% {
+            transform: translateY(0) rotate(-2deg);
+          }
+          25% {
+            transform: translateY(-10px) rotate(2deg);
+          }
+          75% {
+            transform: translateY(-5px) rotate(-1deg);
+          }
+        }
+
+        /* NAMES ANIMATION */
+        .name-animate {
+          display: inline-block;
+          animation: nameFloat 4s ease-in-out infinite;
+        }
+
+        .name-animate:nth-child(1) {
+          animation-delay: 0s;
+        }
+
+        .name-animate:nth-child(2) {
+          animation-delay: 0.2s;
+        }
+
+        @keyframes nameFloat {
+          0%, 100% {
+            transform: translateY(0);
+          }
+          50% {
+            transform: translateY(-8px);
+          }
+        }
+
+        /* DECORATIVE FLOURISH */
+        .flourish {
+          position: relative;
+        }
+
+        .flourish::before,
+        .flourish::after {
+          content: '❦';
+          position: absolute;
+          color: var(--gold);
+          font-size: 24px;
+          opacity: 0.4;
+          animation: flourishPulse 2s ease-in-out infinite;
+        }
+
+        .flourish::before {
+          left: -40px;
+          animation-delay: 0s;
+        }
+
+        .flourish::after {
+          right: -40px;
+          animation-delay: 1s;
+        }
+
+        @keyframes flourishPulse {
+          0%, 100% {
+            opacity: 0.2;
+            transform: scale(1);
+          }
+          50% {
+            opacity: 0.6;
+            transform: scale(1.2);
+          }
+        }
+
+        /* ROMANTIC GLOW */
+        .romantic-glow {
+          animation: glow 3s ease-in-out infinite;
+        }
+
+        @keyframes glow {
+          0%, 100% {
+            text-shadow: 0 0 10px rgba(184,154,90,0.3);
+          }
+          50% {
+            text-shadow: 0 0 20px rgba(184,154,90,0.6), 0 0 30px rgba(184,154,90,0.4);
+          }
+        }
+
+        /* FADE IN STAGGER */
+        .fade-in-stagger > * {
+          opacity: 0;
+          animation: fadeInUp 0.8s ease forwards;
+        }
+
+        .fade-in-stagger > *:nth-child(1) { animation-delay: 0.2s; }
+        .fade-in-stagger > *:nth-child(2) { animation-delay: 0.4s; }
+        .fade-in-stagger > *:nth-child(3) { animation-delay: 0.6s; }
+        .fade-in-stagger > *:nth-child(4) { animation-delay: 0.8s; }
+        .fade-in-stagger > *:nth-child(5) { animation-delay: 1s; }
+        .fade-in-stagger > *:nth-child(6) { animation-delay: 1.2s; }
+        .fade-in-stagger > *:nth-child(7) { animation-delay: 1.4s; }
+
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(30px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        /* IMAGE FRAME */
+        .image-frame {
+          position: relative;
+          border: 8px solid rgba(255,255,255,0.9);
+          box-shadow: 
+            0 10px 40px rgba(0,0,0,0.15),
+            inset 0 0 0 1px rgba(184,154,90,0.3);
+          border-radius: 4px;
+        }
+
+        .image-frame::before {
+          content: '';
+          position: absolute;
+          inset: -16px;
+          border: 1px solid rgba(184,154,90,0.2);
+          border-radius: 4px;
+          pointer-events: none;
+        }
+
+        /* QUOTE STYLING */
+        .quote-mark {
+          font-family: Georgia, serif;
+          font-size: 80px;
+          line-height: 0;
+          color: var(--gold);
+          opacity: 0.3;
         }
       `}</style>
 
-      {/* SECTION 1 */}
+      {/* SCROLL DOWN HINT */}
+      <div className={`scroll-hint ${showScrollHint ? '' : 'hidden'}`}>
+        <div className="flex flex-col items-center gap-2">
+          <div className="font-caps text-[10px] text-[color:var(--gold)]">
+            RRËSHQIT POSHTË
+          </div>
+          <ChevronDown size={32} color="#b89a5a" strokeWidth={1.5} />
+        </div>
+      </div>
+
+      {/* SECTION 1 - MAIN TITLE */}
       <section
         ref={(el) => (sectionsRef.current[0] = el)}
-        className="min-h-screen flex items-center justify-center px-6 scroll-section visible bg1"
+        className="snap-section flex items-center justify-center px-6 scroll-section visible bg1"
       >
-        <div className="text-center max-w-3xl">
+        <FloatingHearts />
+        <Sparkles />
+        
+        <div className="text-center max-w-3xl fade-in-stagger relative z-10">
           <div className="font-caps text-[12px] text-[color:var(--muted)]">
             SAVE THE DATE
           </div>
 
-          <h1 className="font-script text-[76px] mt-6 text-[color:var(--ink)]">
+          <h1 className="font-script text-[76px] mt-6 text-[color:var(--ink)] dancing-text romantic-glow">
             Dita e Dasmës
           </h1>
 
-          <div className="font-serif text-[46px] mt-4 text-[color:var(--ink)] font-semibold">
-            Suhejb <span style={{ color: "var(--gold)" }}>&</span> Aurora
+          <div className="font-serif text-[46px] mt-4 text-[color:var(--ink)] font-semibold flourish">
+            <span className="name-animate">Suhejb</span>{" "}
+            <span style={{ color: "var(--gold)" }} className="dancing-text">&</span>{" "}
+            <span className="name-animate">Aurora</span>
           </div>
 
           <div className="mt-10 divider"></div>
@@ -251,25 +555,27 @@ export default function WeddingInvitation() {
 
           <div className="mt-10 divider"></div>
 
-          <p className="font-serif text-[20px] mt-10 text-[color:var(--muted)]">
-            Me dashuri fillon gjithçka
+          <p className="font-serif text-[20px] mt-10 text-[color:var(--muted)] dancing-text">
+            Me dashuri fillon gjithçka ✨
           </p>
         </div>
       </section>
 
-      {/* SECTION 2 – COUNTDOWN */}
+      {/* SECTION 2 - COUNTDOWN */}
       <section
         ref={(el) => (sectionsRef.current[1] = el)}
-        className="min-h-screen flex items-center justify-center px-6 scroll-section bg2"
+        className="snap-section flex items-center justify-center px-6 scroll-section bg2"
       >
-        <div className="text-center max-w-4xl w-full">
-          <Calendar className="mx-auto mb-6" size={56} color="#b89a5a" />
+        <FloatingHearts />
+        
+        <div className="text-center max-w-4xl w-full relative z-10">
+          <Calendar className="mx-auto mb-6 dancing-text" size={56} color="#b89a5a" />
 
           <div className="font-caps text-[12px] text-[color:var(--muted)]">
             NUMËRIMI MBRAPSHT
           </div>
 
-          <h2 className="font-serif text-[52px] mt-4 text-[color:var(--ink)] font-semibold">
+          <h2 className="font-serif text-[52px] mt-4 text-[color:var(--ink)] font-semibold romantic-glow">
             Po i afrohemi ditës sonë
           </h2>
 
@@ -294,25 +600,86 @@ export default function WeddingInvitation() {
           </div>
 
           <div
-            className="font-script text-[44px] mt-12"
+            className="font-script text-[44px] mt-12 dancing-text"
             style={{ color: "var(--gold)" }}
           >
-            Shihemi së shpejti
+            Shihemi së shpejti 💫
           </div>
         </div>
       </section>
 
-      {/* SECTION 3 – LOCATION */}
+      {/* SECTION 3 - PHOTO */}
       <section
         ref={(el) => (sectionsRef.current[2] = el)}
-        className="min-h-screen flex items-center justify-center px-6 scroll-section bg3"
+        className="snap-section flex items-center justify-center px-6 scroll-section bg3"
       >
-        <div className="text-center max-w-5xl w-full">
+        <Sparkles />
+        
+        <div className="text-center max-w-4xl w-full relative z-10">
+          <div className="font-caps text-[12px] text-[color:var(--muted)] mb-8">
+            ÇIFTI I LUMTUR
+          </div>
+
+          <div className="image-frame max-w-2xl mx-auto overflow-hidden">
+            <img
+              src="/public/photo1.jpg"
+              alt="Suhejb & Aurora"
+              className="w-full h-auto object-cover"
+              style={{ aspectRatio: '3/4', maxHeight: '70vh' }}
+            />
+          </div>
+
+          <div className="font-script text-[38px] mt-10 text-[color:var(--gold)] dancing-text">
+            Suhejb & Aurora
+          </div>
+          
+          <p className="font-serif text-[18px] mt-4 text-[color:var(--muted)] italic">
+            Bashkë përgjithmonë
+          </p>
+        </div>
+      </section>
+
+      {/* SECTION 4 - QUOTE */}
+      <section
+        ref={(el) => (sectionsRef.current[3] = el)}
+        className="snap-section flex items-center justify-center px-6 scroll-section bg4"
+      >
+        <FloatingHearts />
+        
+        <div className="text-center max-w-3xl w-full relative z-10">
+          <div className="quote-mark mb-4">"</div>
+          
+          <p className="font-serif text-[32px] leading-relaxed text-[color:var(--ink)] italic">
+            Dashuria është mrekullia jonë,
+            <br />
+            besnikëria është forca jonë,
+            <br />
+            dhe bashkë jemi të plotë
+          </p>
+
+          <div className="quote-mark mt-4 rotate-180 inline-block">"</div>
+
+          <div className="mt-12 divider"></div>
+
+          <p className="font-caps text-[11px] mt-8 text-[color:var(--muted)] tracking-widest">
+            NJË FESTË E DASHURISË DHE BASHKIMIT
+          </p>
+        </div>
+      </section>
+
+      {/* SECTION 5 - LOCATION */}
+      <section
+        ref={(el) => (sectionsRef.current[4] = el)}
+        className="snap-section flex items-center justify-center px-6 scroll-section bg5"
+      >
+        <FloatingHearts />
+        
+        <div className="text-center max-w-5xl w-full relative z-10">
           <div className="font-caps text-[12px] text-[color:var(--muted)]">
             VENDNDODHJA
           </div>
 
-          <h2 className="font-serif text-[52px] mt-4 text-[color:var(--ink)] font-semibold">
+          <h2 className="font-serif text-[52px] mt-4 text-[color:var(--ink)] font-semibold romantic-glow">
             Restaurant Rozafa
           </h2>
 
@@ -336,11 +703,10 @@ export default function WeddingInvitation() {
               title="Lokacioni i dasmës"
             />
           </div>
-          
 
           <button
             onClick={openMap}
-            className="mt-10 inline-flex items-center gap-2 px-8 py-4 rounded-full"
+            className="mt-10 inline-flex items-center gap-2 px-8 py-4 rounded-full transition-transform hover:scale-105"
             style={{
               background: "var(--gold)",
               color: "white",
@@ -354,10 +720,11 @@ export default function WeddingInvitation() {
           </button>
 
           <div className="mt-12 flex justify-center items-center gap-2 text-[color:var(--muted)]">
-            <Heart size={18} color="#b89a5a" />
+            <Heart size={18} color="#b89a5a" className="dancing-text" fill="#b89a5a" />
             <span className="font-serif text-[20px]">
               Me padurim presim të festojmë së bashku me ju
             </span>
+            <Heart size={18} color="#b89a5a" className="dancing-text" fill="#b89a5a" />
           </div>
         </div>
       </section>
