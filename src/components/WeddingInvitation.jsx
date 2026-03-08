@@ -755,7 +755,7 @@ export default function WeddingInvitation() {
           <div className="mt-12 flex flex-wrap justify-center items-center gap-2 text-[color:var(--muted)] px-4">
             <Heart size={18} color="#b89a5a" className="dancing-text flex-shrink-0" fill="#b89a5a" />
             <span className="font-serif text-[16px] sm:text-[20px] text-center">
-              Me padurim presim të festojmë së bashku me ju
+              Me padurim presim të festojmë së bashku me ju, për mos ardhjen ju lutem na njoftoni.
             </span>
             <Heart size={18} color="#b89a5a" className="dancing-text flex-shrink-0" fill="#b89a5a" />
           </div>
